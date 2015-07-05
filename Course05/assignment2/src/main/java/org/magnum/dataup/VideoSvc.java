@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.magnum.dataup.model.Video;
 import org.magnum.dataup.model.VideoStatus;
@@ -40,84 +41,159 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Handles client video requests
+ */
 @Controller
 public class VideoSvc {
 
 	/**
-	 * You will need to create one or more Spring controllers to fulfill the
-	 * requirements of the assignment. If you use this file, please rename it
-	 * to something other than "AnEmptyController"
-	 * 
-	 * 
-		 ________  ________  ________  ________          ___       ___  ___  ________  ___  __       
-		|\   ____\|\   __  \|\   __  \|\   ___ \        |\  \     |\  \|\  \|\   ____\|\  \|\  \     
-		\ \  \___|\ \  \|\  \ \  \|\  \ \  \_|\ \       \ \  \    \ \  \\\  \ \  \___|\ \  \/  /|_   
-		 \ \  \  __\ \  \\\  \ \  \\\  \ \  \ \\ \       \ \  \    \ \  \\\  \ \  \    \ \   ___  \  
-		  \ \  \|\  \ \  \\\  \ \  \\\  \ \  \_\\ \       \ \  \____\ \  \\\  \ \  \____\ \  \\ \  \ 
-		   \ \_______\ \_______\ \_______\ \_______\       \ \_______\ \_______\ \_______\ \__\\ \__\
-		    \|_______|\|_______|\|_______|\|_______|        \|_______|\|_______|\|_______|\|__| \|__|
-                                                                                                                                                                                                                                                                        
-	 * 
+	 * Id generator
 	 */
-	
 	private static final AtomicLong currentId = new AtomicLong(0L);
 
-    private Map<Long,Video> videos = new HashMap<Long, Video>();
-	
-	
-	@RequestMapping(value=VideoSvcApi.VIDEO_SVC_PATH,method=RequestMethod.POST)
-	public @ResponseBody Video addVideo(@RequestBody Video video){
+	/**
+	 * Reference to the pair id->Video object
+	 */
+	private Map<Long, Video> videos = new HashMap<Long, Video>();
+
+	/**
+	 * Add video to the hash map
+	 * 
+	 * @param video
+	 *            Video meta-data
+	 * @return Video meta-data modified
+	 */
+	@RequestMapping(value = VideoSvcApi.VIDEO_SVC_PATH, method = RequestMethod.POST)
+	public @ResponseBody Video addVideo(@RequestBody Video video) {
 		checkAndSetId(video);
-        videos.put(video.getId(), video);
-        video.setDataUrl(getDataUrl(video.getId()));
-        return video;
+		video.setDataUrl(getDataUrl(video.getId()));
+		videos.put(video.getId(), video);
+		return video;
 	}
-	
-	@RequestMapping(value=VideoSvcApi.VIDEO_SVC_PATH,method=RequestMethod.GET)
-	public @ResponseBody List<Video> getVideoList(){
-		List<Video> listVideos=new ArrayList<Video>();
-		for(Long key:videos.keySet()){
-			Video itemVideo=videos.get(key);
+
+	/**
+	 * Get all video list saved into hashmap
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = VideoSvcApi.VIDEO_SVC_PATH, method = RequestMethod.GET)
+	public @ResponseBody List<Video> getVideoList() {
+		List<Video> listVideos = new ArrayList<Video>();
+		for (Long key : videos.keySet()) {
+			Video itemVideo = videos.get(key);
 			listVideos.add(itemVideo);
 		}
 		return listVideos;
 	}
-	
-	@RequestMapping(value=VideoSvcApi.VIDEO_DATA_PATH,method=RequestMethod.POST)
-	public @ResponseBody VideoStatus setVideoData(@PathVariable(VideoSvcApi.ID_PARAMETER)  Long id
-			,@RequestParam(VideoSvcApi.DATA_PARAMETER) MultipartFile data) throws IOException{
-		VideoStatus status=new VideoStatus(VideoState.PROCESSING);
-		
-			VideoFileManager fileMgm=VideoFileManager.get();
-			//Video video=videos.get(id);
-			Video video =new Video();
-			video.setId(id);
-			video.setDataUrl(getDataUrl(video.getId()));
-			fileMgm.saveVideoData(video, data.getInputStream());
-			status.setState(VideoState.READY);
-		
+
+	/**
+	 * Save stream video to disk
+	 * 
+	 * @param id
+	 *            Video identifier
+	 * @param data
+	 *            Stream that contains the video data
+	 * @return Object representing video status operation
+	 */
+	@RequestMapping(value = VideoSvcApi.VIDEO_DATA_PATH, method = RequestMethod.POST)
+	public @ResponseBody VideoStatus setVideoData(
+			@PathVariable(VideoSvcApi.ID_PARAMETER) Long id,
+			@RequestParam(VideoSvcApi.DATA_PARAMETER) MultipartFile data,
+			HttpServletResponse response) {
+		VideoStatus status = new VideoStatus(VideoState.PROCESSING);
+		VideoFileManager fileMgm;
+		try {
+			if (videos.containsKey(id)) {
+				fileMgm = VideoFileManager.get();
+				Video video = creteVideoFromId(id);
+				fileMgm.saveVideoData(video, data.getInputStream());
+				status.setState(VideoState.READY);
+			} else {
+				response.setStatus(404);
+			}
+		} catch (IOException e) {
+			response.setStatus(404);
+		}
 		return status;
 	}
-	
 
-    private void checkAndSetId(Video entity) {
-        if(entity.getId() == 0){
-            entity.setId(currentId.incrementAndGet());
-        }
-    }
-    
-    private String getDataUrl(long videoId){
-        String url = getUrlBaseForLocalServer() + "/video/" + videoId + "/data";
-        return url;
-    }
+	/**
+	 * Get video stream data
+	 * 
+	 * @param id
+	 *            Video identifier
+	 */
+	@RequestMapping(value = VideoSvcApi.VIDEO_DATA_PATH, method = RequestMethod.GET)
+	public void getData(@PathVariable Long id, HttpServletResponse response) {
+		try {
+			VideoFileManager fileManager = VideoFileManager.get();
+			Video video = creteVideoFromId(id);
+			if (fileManager.hasVideoData(video)) {
+				response.setContentType("video/mp4");
+				fileManager.copyVideoData(video, response.getOutputStream());
+				response.setStatus(200);
+				response.flushBuffer();
+			} else {
+				response.setStatus(404);
+			}
+		} catch (IOException e) {
+			response.setStatus(404);
+		}
+	}
 
-    private String getUrlBaseForLocalServer() {
-       HttpServletRequest request = 
-           ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-       String base = 
-          "http://"+request.getServerName() 
-          + ((request.getServerPort() != 80) ? ":"+request.getServerPort() : "");
-       return base;
-    }
-	
+	/**
+	 * Create Video instance from id
+	 * 
+	 * @param id
+	 *            Video identifier
+	 * @return Video instance object
+	 */
+	private Video creteVideoFromId(Long id) {
+		String url = getDataUrl(id);
+		Video video = new Video();
+		video.setId(id);
+		video.setDataUrl(url);
+		return video;
+	}
+
+	/**
+	 * Set video identifier
+	 * 
+	 * @param entity
+	 *            Video object involved
+	 */
+	private void checkAndSetId(Video entity) {
+		if (entity.getId() == 0) {
+			entity.setId(currentId.incrementAndGet());
+		}
+	}
+
+	/**
+	 * Construct URL corresponding to video ID
+	 * 
+	 * @param videoId
+	 *            Video identifier
+	 * @return Video URL
+	 */
+	private String getDataUrl(long videoId) {
+		String url = getUrlBaseForLocalServer() + "/video/" + videoId + "/data";
+		return url;
+	}
+
+	/**
+	 * Get base URL for local server
+	 * 
+	 * @return Base URL for local server
+	 */
+	private String getUrlBaseForLocalServer() {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+				.getRequestAttributes()).getRequest();
+		String base = "http://"
+				+ request.getServerName()
+				+ ((request.getServerPort() != 80) ? ":"
+						+ request.getServerPort() : "");
+		return base;
+	}
+
 }
