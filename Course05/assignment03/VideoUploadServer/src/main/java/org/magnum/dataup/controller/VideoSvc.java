@@ -15,7 +15,7 @@
  * limitations under the License.
  * 
  */
-package org.magnum.dataup;
+package org.magnum.dataup.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,9 +27,13 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.magnum.dataup.VideoFileManager;
+import org.magnum.dataup.VideoSvcApi;
 import org.magnum.dataup.model.Video;
 import org.magnum.dataup.model.VideoStatus;
 import org.magnum.dataup.model.VideoStatus.VideoState;
+import org.magnum.dataup.repository.VideoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,12 +45,18 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.common.collect.Lists;
+
 /**
  * Handles client video requests
  */
 @Controller
 public class VideoSvc {
 
+	
+	@Autowired
+	private VideoRepository repository;
+	
 	/**
 	 * Id generator
 	 */
@@ -66,10 +76,9 @@ public class VideoSvc {
 	 */
 	@RequestMapping(value = VideoSvcApi.VIDEO_SVC_PATH, method = RequestMethod.POST)
 	public @ResponseBody Video addVideo(@RequestBody Video video) {
-		checkAndSetId(video);
-		video.setDataUrl(getDataUrl(video.getId()));
-		videos.put(video.getId(), video);
-		return video;
+		video.setLocation(getDataUrl());
+		Video videoResult=repository.save(video);
+		return videoResult;
 	}
 
 	/**
@@ -79,12 +88,7 @@ public class VideoSvc {
 	 */
 	@RequestMapping(value = VideoSvcApi.VIDEO_SVC_PATH, method = RequestMethod.GET)
 	public @ResponseBody List<Video> getVideoList() {
-		List<Video> listVideos = new ArrayList<Video>();
-		for (Long key : videos.keySet()) {
-			Video itemVideo = videos.get(key);
-			listVideos.add(itemVideo);
-		}
-		return listVideos;
+		return Lists.newArrayList(repository.findAll());
 	}
 
 	/**
@@ -104,7 +108,7 @@ public class VideoSvc {
 		VideoStatus status = new VideoStatus(VideoState.PROCESSING);
 		VideoFileManager fileMgm;
 		try {
-			if (videos.containsKey(id)) {
+			if (repository.exists(id)) {
 				fileMgm = VideoFileManager.get();
 				Video video = creteVideoFromId(id);
 				fileMgm.saveVideoData(video, data.getInputStream());
@@ -128,7 +132,7 @@ public class VideoSvc {
 	public void getData(@PathVariable Long id, HttpServletResponse response) {
 		try {
 			VideoFileManager fileManager = VideoFileManager.get();
-			Video video = creteVideoFromId(id);
+			Video video = repository.findOne(id);
 			if (fileManager.hasVideoData(video)) {
 				response.setContentType("video/mp4");
 				fileManager.copyVideoData(video, response.getOutputStream());
@@ -163,11 +167,11 @@ public class VideoSvc {
 	 * @param entity
 	 *            Video object involved
 	 */
-	private void checkAndSetId(Video entity) {
-		if (entity.getId() == 0) {
-			entity.setId(currentId.incrementAndGet());
-		}
-	}
+//	private void checkAndSetId(Video entity) {
+//		if (entity.getId() == 0) {
+//			entity.setId(currentId.incrementAndGet());
+//		}
+//	}
 
 	/**
 	 * Construct URL corresponding to video ID
@@ -178,6 +182,12 @@ public class VideoSvc {
 	 */
 	private String getDataUrl(long videoId) {
 		String url = getUrlBaseForLocalServer() + "/video/" + videoId + "/data";
+		return url;
+	}
+	
+	private String getDataUrl() {
+		java.util.UUID uid=java.util.UUID.randomUUID();
+		String url = getUrlBaseForLocalServer() + "/video/" + uid.toString() + "/data";
 		return url;
 	}
 

@@ -19,35 +19,14 @@ package org.magnum.dataup.model;
 
 import java.util.Objects;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fluentinterface.ReflectionBuilder;
 import com.fluentinterface.builder.Builder;
-
-/**
-                    ___                    ___           ___                            
-     _____         /\  \                  /\  \         /\  \                           
-    /::\  \       /::\  \                 \:\  \       /::\  \         ___              
-   /:/\:\  \     /:/\:\  \                 \:\  \     /:/\:\  \       /\__\             
-  /:/  \:\__\   /:/  \:\  \            _____\:\  \   /:/  \:\  \     /:/  /             
- /:/__/ \:|__| /:/__/ \:\__\          /::::::::\__\ /:/__/ \:\__\   /:/__/              
- \:\  \ /:/  / \:\  \ /:/  /          \:\~~\~~\/__/ \:\  \ /:/  /  /::\  \              
-  \:\  /:/  /   \:\  /:/  /            \:\  \        \:\  /:/  /  /:/\:\  \             
-   \:\/:/  /     \:\/:/  /              \:\  \        \:\/:/  /   \/__\:\  \            
-    \::/  /       \::/  /                \:\__\        \::/  /         \:\__\           
-     \/__/         \/__/                  \/__/         \/__/           \/__/           
-      ___           ___                                     ___                         
-     /\  \         /\  \         _____                     /\__\                        
-    |::\  \       /::\  \       /::\  \       ___         /:/ _/_         ___           
-    |:|:\  \     /:/\:\  \     /:/\:\  \     /\__\       /:/ /\__\       /|  |          
-  __|:|\:\  \   /:/  \:\  \   /:/  \:\__\   /:/__/      /:/ /:/  /      |:|  |          
- /::::|_\:\__\ /:/__/ \:\__\ /:/__/ \:|__| /::\  \     /:/_/:/  /       |:|  |          
- \:\~~\  \/__/ \:\  \ /:/  / \:\  \ /:/  / \/\:\  \__  \:\/:/  /      __|:|__|          
-  \:\  \        \:\  /:/  /   \:\  /:/  /   ~~\:\/\__\  \::/__/      /::::\  \          
-   \:\  \        \:\/:/  /     \:\/:/  /       \::/  /   \:\  \      ~~~~\:\  \         
-    \:\__\        \::/  /       \::/  /        /:/  /     \:\__\          \:\__\        
-     \/__/         \/__/         \/__/         \/__/       \/__/           \/__/        
- */
 
 public class Video {
 
@@ -57,17 +36,23 @@ public class Video {
 
 	public interface VideoBuilder extends Builder<Video> {
 		public VideoBuilder withTitle(String title);
+
 		public VideoBuilder withDuration(long duration);
+
 		public VideoBuilder withSubject(String subject);
+
 		public VideoBuilder withContentType(String contentType);
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	private String title;
-	private long duration;
+	// private long duration;
 	private String location;
-	private String subject;
+	// private String subject;
 	private String contentType;
+	private byte rating;
 
 	@JsonIgnore
 	private String dataUrl;
@@ -88,13 +73,13 @@ public class Video {
 		this.title = title;
 	}
 
-	public long getDuration() {
-		return duration;
-	}
-
-	public void setDuration(long duration) {
-		this.duration = duration;
-	}
+	// public long getDuration() {
+	// return duration;
+	// }
+	//
+	// public void setDuration(long duration) {
+	// this.duration = duration;
+	// }
 
 	public String getLocation() {
 		return location;
@@ -104,13 +89,13 @@ public class Video {
 		this.location = location;
 	}
 
-	public String getSubject() {
-		return subject;
-	}
-
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
+	// public String getSubject() {
+	// return subject;
+	// }
+	//
+	// public void setSubject(String subject) {
+	// this.subject = subject;
+	// }
 
 	@JsonProperty
 	public String getDataUrl() {
@@ -132,14 +117,22 @@ public class Video {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getTitle(), getDuration());
+		return Objects.hash(getTitle(), getId());
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		return (obj instanceof Video)
 				&& Objects.equals(getTitle(), ((Video) obj).getTitle())
-				&& getDuration() == ((Video) obj).getDuration();
+				&& getId() == ((Video) obj).getId();
+	}
+
+	public byte getRating() {
+		return rating;
+	}
+
+	public void setRating(byte rating) {
+		this.rating = rating;
 	}
 
 }
