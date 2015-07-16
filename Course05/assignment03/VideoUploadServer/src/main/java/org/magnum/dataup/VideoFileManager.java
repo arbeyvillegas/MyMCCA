@@ -26,7 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-import org.magnum.dataup.model.Video;
+import org.magnum.dataup.repository.Video;
 
 /**
  * This class provides a simple implementation to store video binary

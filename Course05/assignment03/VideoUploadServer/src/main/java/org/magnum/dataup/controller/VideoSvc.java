@@ -18,20 +18,16 @@
 package org.magnum.dataup.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.magnum.dataup.VideoFileManager;
 import org.magnum.dataup.VideoSvcApi;
-import org.magnum.dataup.model.Video;
 import org.magnum.dataup.model.VideoStatus;
 import org.magnum.dataup.model.VideoStatus.VideoState;
+import org.magnum.dataup.repository.Video;
 import org.magnum.dataup.repository.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -57,16 +53,6 @@ public class VideoSvc {
 	@Autowired
 	private VideoRepository repository;
 	
-	/**
-	 * Id generator
-	 */
-	private static final AtomicLong currentId = new AtomicLong(0L);
-
-	/**
-	 * Reference to the pair id->Video object
-	 */
-	private Map<Long, Video> videos = new HashMap<Long, Video>();
-
 	/**
 	 * Add video to the hash map
 	 * 
@@ -110,7 +96,7 @@ public class VideoSvc {
 		try {
 			if (repository.exists(id)) {
 				fileMgm = VideoFileManager.get();
-				Video video = creteVideoFromId(id);
+				Video video = repository.findOne(id);
 				fileMgm.saveVideoData(video, data.getInputStream());
 				status.setState(VideoState.READY);
 			} else {
@@ -146,33 +132,9 @@ public class VideoSvc {
 		}
 	}
 
-	/**
-	 * Create Video instance from id
-	 * 
-	 * @param id
-	 *            Video identifier
-	 * @return Video instance object
-	 */
-	private Video creteVideoFromId(Long id) {
-		String url = getDataUrl(id);
-		Video video = new Video();
-		video.setId(id);
-		video.setDataUrl(url);
-		return video;
-	}
+	
 
-	/**
-	 * Set video identifier
-	 * 
-	 * @param entity
-	 *            Video object involved
-	 */
-//	private void checkAndSetId(Video entity) {
-//		if (entity.getId() == 0) {
-//			entity.setId(currentId.incrementAndGet());
-//		}
-//	}
-
+	
 	/**
 	 * Construct URL corresponding to video ID
 	 * 

@@ -15,34 +15,27 @@
  * limitations under the License.
  * 
  */
-package org.magnum.dataup.model;
+package org.magnum.dataup.repository;
 
 import java.util.Objects;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fluentinterface.ReflectionBuilder;
-import com.fluentinterface.builder.Builder;
 
+
+@Entity
 public class Video {
 
-	public static VideoBuilder create() {
-		return ReflectionBuilder.implementationFor(VideoBuilder.class).create();
+	
+	public Video(){
+		
 	}
-
-	public interface VideoBuilder extends Builder<Video> {
-		public VideoBuilder withTitle(String title);
-
-		public VideoBuilder withDuration(long duration);
-
-		public VideoBuilder withSubject(String subject);
-
-		public VideoBuilder withContentType(String contentType);
-	}
+	
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -54,8 +47,6 @@ public class Video {
 	private String contentType;
 	private byte rating;
 
-	@JsonIgnore
-	private String dataUrl;
 
 	public long getId() {
 		return id;
@@ -97,15 +88,7 @@ public class Video {
 	// this.subject = subject;
 	// }
 
-	@JsonProperty
-	public String getDataUrl() {
-		return dataUrl;
-	}
-
-	@JsonIgnore
-	public void setDataUrl(String dataUrl) {
-		this.dataUrl = dataUrl;
-	}
+	
 
 	public String getContentType() {
 		return contentType;

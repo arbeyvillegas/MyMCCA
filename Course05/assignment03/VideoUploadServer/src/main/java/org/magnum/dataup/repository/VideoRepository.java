@@ -2,7 +2,6 @@ package org.magnum.dataup.repository;
 
 import java.util.Collection;
 
-import org.magnum.dataup.model.Video;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +16,6 @@ import org.springframework.stereotype.Repository;
 public interface VideoRepository extends CrudRepository<Video, Long>{
 
 	// Find all videos with a matching title (e.g., Video.name)
-	public Collection<Video> findByName(String title);
+	public Collection<Video> findByTitle(String title);
 	
 }
