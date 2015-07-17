@@ -133,20 +133,10 @@ public class VideoSvc {
 	}
 
 	
-
-	
-	/**
-	 * Construct URL corresponding to video ID
-	 * 
-	 * @param videoId
-	 *            Video identifier
-	 * @return Video URL
-	 */
-	private String getDataUrl(long videoId) {
-		String url = getUrlBaseForLocalServer() + "/video/" + videoId + "/data";
-		return url;
-	}
-	
+	/***
+	 * Get physic url of video
+	 * @return Video's url
+	 */	
 	private String getDataUrl() {
 		java.util.UUID uid=java.util.UUID.randomUUID();
 		String url = getUrlBaseForLocalServer() + "/video/" + uid.toString() + "/data";
