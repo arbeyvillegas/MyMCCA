@@ -1,6 +1,6 @@
 package vandy.mooc.model.services;
 
-import vandy.mooc.model.mediator.VideoDataMediator;
+import vandy.mooc.model.provider.VideoController;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -24,6 +24,10 @@ public class UploadVideoService
     public static final String ACTION_UPLOAD_SERVICE_RESPONSE =
                 "vandy.mooc.services.UploadVideoService.RESPONSE";
     
+    public static final String KEY_UPLOAD_VIDEO_ID = "upload_video_id";
+    
+    public static final Long DEFAULT_VIDEO_ID = (long) 0;
+    
     /**
      * It is used by Notification Manager to send Notifications.
      */
@@ -33,7 +37,7 @@ public class UploadVideoService
      * VideoDataMediator mediates the communication between Video
      * Service and local storage in the Android device.
      */
-    private VideoDataMediator mVideoMediator;
+    //private VideoDataMediator mVideoMediator;
     
     /**
      * Manages the Notification displayed in System UI.
@@ -44,6 +48,8 @@ public class UploadVideoService
      * Builder used to build the Notification.
      */
     private Builder mBuilder;
+    
+    private VideoController mController;
     
     /**
      * Constructor for UploadVideoService.
@@ -72,10 +78,15 @@ public class UploadVideoService
      * @return
      */
     public static Intent makeIntent(Context context,
+    								Long videoId,
                                     Uri videoUri) {
-        return new Intent(context, 
-                          UploadVideoService.class)
-                   .setData(videoUri);
+    	Intent intent = new Intent(context, 
+                          UploadVideoService.class);
+    	
+    	intent.setData(videoUri);
+    	intent.putExtra(KEY_UPLOAD_VIDEO_ID, videoId);
+    	
+    	return intent;
     }
     
     /**
@@ -94,12 +105,21 @@ public class UploadVideoService
         
         // Create VideoDataMediator that will mediate the communication
         // between Server and Android Storage.
-        mVideoMediator =
-            new VideoDataMediator(); 
-
-        // Check if Video Upload is successful.
-        finishNotification(mVideoMediator.uploadVideo(getApplicationContext(),
-                                                   intent.getData()));
+        //mVideoMediator =
+           // new VideoDataMediator(); 
+        
+        mController =
+        		new VideoController(getApplicationContext());
+        
+        Long videoId = 
+        		intent.getLongExtra(KEY_UPLOAD_VIDEO_ID, 
+        							DEFAULT_VIDEO_ID);
+        
+        if(mController.uploadVideo(videoId, 
+        						intent.getData()))
+        	finishNotification("Upload Complete");
+        else
+        	finishNotification("Upload fail");
              
         // Send the Broadcast to VideoListActivity that the Video
         // Upload is completed.

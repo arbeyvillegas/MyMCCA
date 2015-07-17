@@ -8,10 +8,13 @@ import vandy.mooc.common.ContextView;
 import vandy.mooc.common.GenericAsyncTask;
 import vandy.mooc.common.GenericAsyncTaskOps;
 import vandy.mooc.common.Utils;
-import vandy.mooc.model.mediator.VideoDataMediator;
 import vandy.mooc.model.mediator.webdata.Video;
+import vandy.mooc.model.provider.VideoController;
+import vandy.mooc.model.provider.VideoContract.AcronymEntry;
 import vandy.mooc.model.services.UploadVideoService;
 import vandy.mooc.view.ui.VideoAdapter;
+import android.content.ContentValues;
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
@@ -68,7 +71,7 @@ public class VideoOps
      * VideoDataMediator mediates the communication between Video
      * Service and local storage on the Android device.
      */
-    VideoDataMediator mVideoMediator;
+    VideoController mVideoController;
     
     /**
      * The Adapter that is needed by ListView to show the list of
@@ -76,6 +79,7 @@ public class VideoOps
      */
     private VideoAdapter mAdapter;
     
+    private Context mContext;
     /**
      * Default constructor that's needed by the GenericActivity
      * framework.
@@ -104,11 +108,14 @@ public class VideoOps
         mVideoView =
             new WeakReference<>(view);
         
+        mContext =
+        		mVideoView.get().getApplicationContext();
+        
         if (firstTimeIn) {
             // Create VideoDataMediator that will mediate the
             // communication between Server and Android Storage.
-            mVideoMediator =
-                new VideoDataMediator();
+            mVideoController =
+                new VideoController(mVideoView.get().getApplicationContext());
             
             // Create a local instance of our custom Adapter for our
             // ListView.
@@ -128,11 +135,19 @@ public class VideoOps
      *   
      * @param videoId
      */
-    public void uploadVideo(Uri videoUri){
+    public void uploadVideo(Long videoId, Uri videoUri){
+    	
+//    	ContentValues contentValues = new ContentValues();
+//        contentValues.put(AcronymEntry.COLUMN_VIDEO_ID, videoId);
+//        contentValues.put(AcronymEntry.COLUMN_RAITING, "0");
+//        
+//        mContext.getContentResolver().insert(AcronymEntry.CONTENT_URI, contentValues);
+        
         // Sends an Intent command to the UploadVideoService.
         mVideoView.get().getApplicationContext().startService
             (UploadVideoService.makeIntent 
                  (mVideoView.get().getApplicationContext(),
+        		  videoId,
                   videoUri));
     }
 
@@ -152,7 +167,7 @@ public class VideoOps
      */
     @Override
     public List<Video> doInBackground(Void... params) {
-        return mVideoMediator.getVideoList();
+        return mVideoController.getVideoList();
     }
 
     /**
@@ -172,6 +187,7 @@ public class VideoOps
         if (videos != null) {
             // Update the adapter with the List of Videos.
             mAdapter.setVideos(videos);
+            
 
             Utils.showToast(mVideoView.get().getActivityContext(),
                             "Videos available from the Video Service");

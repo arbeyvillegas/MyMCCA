@@ -2,6 +2,7 @@ package vandy.mooc.model.mediator.webdata;
 
 import java.util.Objects;
 
+
 /**
  * This "Plain Ol' Java Object" (POJO) class represents meta-data of
  * interest downloaded in Json from the Video Service via the
@@ -17,6 +18,7 @@ public class Video {
     private long duration;
     private String contentType;
     private String dataUrl;
+    private byte rating;
 	
     /**
      * No-op constructor
@@ -33,6 +35,7 @@ public class Video {
         this.title = title;
         this.duration = duration;
         this.contentType = contentType;
+        this.rating = 1;
     }
 
     /**
@@ -48,6 +51,7 @@ public class Video {
         this.duration = duration;
         this.contentType = contentType;
         this.dataUrl = dataUrl;
+        this.rating = 1;
     }
 
     /*
@@ -147,6 +151,7 @@ public class Video {
             "Duration: "+ duration + ", "+
             "ContentType: "+ contentType + ", "+
             "Data URL: "+ dataUrl +
+            "rating: "+ rating + ", "+
             "}";
     }
 
@@ -170,4 +175,12 @@ public class Video {
                               ((Video) obj).getTitle())
             && getDuration() == ((Video) obj).getDuration();
     }
+    
+    public byte getRating() {
+		return rating;
+	}
+
+	public void setRating(byte rating) {
+		this.rating = rating;
+	}
 }

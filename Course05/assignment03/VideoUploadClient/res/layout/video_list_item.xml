@@ -18,6 +18,10 @@
         android:layout_gravity="center"
         android:padding="15dp"
         android:textColor="@android:color/black"/>
-    
+
+    <RatingBar
+        android:id="@+id/ratingBar1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
             
 </LinearLayout>
