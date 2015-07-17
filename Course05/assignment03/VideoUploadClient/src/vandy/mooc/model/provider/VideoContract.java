@@ -14,7 +14,7 @@ public class VideoContract {
      * on the device.
      */
     public static final String CONTENT_AUTHORITY =
-        "vandy.mooc.common";
+        "vandy.mooc.videoupload";
 
     /**
      * Use CONTENT_AUTHORITY to create the base of all URI's that apps
@@ -70,13 +70,16 @@ public class VideoContract {
          * Name of the database table.
          */
         public static final String TABLE_NAME =
-            "video_table";
+            "video";
 
         /**
          * Columns to store Data of each Acronym Expansion.
          */
         public static final String COLUMN_VIDEO_ID = "videoId";
         public static final String COLUMN_RAITING = "raiting";
+        public static final String COLUMN_TYPE = "content_type";
+        public static final String COLUMN_LOCATION = "location";
+        public static final String COLUMN_TITLE = "title";
 
         /**
          * Return a Uri that points to the row containing a given id.

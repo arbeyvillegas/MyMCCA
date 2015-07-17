@@ -79,16 +79,26 @@ public class VideoUpClientProvider extends ContentProvider {
                       ContentValues values) {
         final SQLiteDatabase db =
                 mOpenHelper.getWritableDatabase();
-
         
-                db.insert(VideoContract.AcronymEntry.TABLE_NAME, null, values);
+        Uri returnUri;
+        
+        long id = db.insert(VideoContract.AcronymEntry.TABLE_NAME, null, values);
+
+        // Check if a new row is inserted or not.
+        if (id > 0)
+            returnUri =
+                    VideoContract.AcronymEntry.buildAcronymUri(id);
+        else
+            throw new android.database.SQLException
+                    ("Failed to insert row into "
+                            + uri);
 
 
         // Notifies registered observers that a row was inserted.
         getContext().getContentResolver().notifyChange(uri,
                 null);
         
-        return null;
+        return returnUri;
     }
 
     // Hook method to handle requests to insert a set of new rows, or

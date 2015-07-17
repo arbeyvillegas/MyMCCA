@@ -28,6 +28,11 @@
             </intent-filter>
         </activity>
         
+        <provider
+	       android:authorities="vandy.mooc.videoupload"
+	       android:name="vandy.mooc.model.provider.VideoUpClientProvider"
+	       android:exported="false"/>
+        
         <service
            android:name=".model.services.UploadVideoService" />
     </application>

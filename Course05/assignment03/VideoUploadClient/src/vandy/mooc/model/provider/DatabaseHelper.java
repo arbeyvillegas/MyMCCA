@@ -18,7 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Database name.
      */
     public static final String DATABASE_NAME =
-        "acronym.db";
+        "VIDEO.db";
 
     /**
      * Constructor for AcronymDatabaseHelper.  Store the database in
@@ -45,9 +45,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_ACRONYM_TABLE =
             "CREATE TABLE "
             + AcronymEntry.TABLE_NAME + " (" 
-            + AcronymEntry._ID + " INTEGER PRIMARY KEY, " 
-            + AcronymEntry.COLUMN_VIDEO_ID + " TEXT NOT NULL, " 
-            + AcronymEntry.COLUMN_RAITING + " TEXT NOT NULL, "  
+            + AcronymEntry._ID + " bigint AUTO_INCREMENT PRIMARY KEY, "
+            + AcronymEntry.COLUMN_VIDEO_ID + " varchar(255) NULL, "
+            + AcronymEntry.COLUMN_TYPE + " varchar(255) NOT NULL, "
+            + AcronymEntry.COLUMN_LOCATION + " varchar(255) NOT NULL, "
+            + AcronymEntry.COLUMN_RAITING + " tinyint NOT NULL, " 
+            + AcronymEntry.COLUMN_TITLE + " varchar(255) NOT NULL "  
             + " );";
         
         // Create the table.
