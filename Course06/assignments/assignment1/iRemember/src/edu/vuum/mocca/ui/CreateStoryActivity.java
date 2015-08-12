@@ -272,7 +272,7 @@ public class CreateStoryActivity extends StoryActivityBase {
 		Log.v(LOG_TAG, "addAudioClicked(View) called.");
 		
 		//Create an intent to start the SoundRecordActivity
-		Intent soundIntent = new Intent(this, SoundRecordActivity.class);	// Line 275
+		Intent soundIntent = new Intent(this, SoundRecordActivity.class);	// Line 275 
 		
 		// Tell the sound activity where to store the recorded audio.
 		String fileName = StorageUtilities.getOutputMediaFile(this, // Line 278

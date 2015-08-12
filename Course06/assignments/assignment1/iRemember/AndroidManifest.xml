@@ -18,7 +18,7 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Line 21 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Line 21 --><!-- TODO deberia agregarse dentro de los permisos propios de la actividad-->
     
     <application
         android:allowBackup="true"
@@ -54,8 +54,9 @@
             android:name="edu.vuum.mocca.ui.SoundRecordActivity"
             android:label="@string/title_activity_sound_record">
             <intent-filter> 										<!-- Line 56 -->
-                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />|
             </intent-filter>
+            
         </activity>
         
     </application>

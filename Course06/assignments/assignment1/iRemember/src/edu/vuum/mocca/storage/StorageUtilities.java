@@ -21,7 +21,7 @@ public class StorageUtilities {
 	public static final String LOG_TAG = StorageUtilities.class.getCanonicalName();
 	
 	// Constant that denote whether a file should be stored publicly or privately
-	public static final int SECURITY_PUBLIC = 0; // Line 24
+	public static final int SECURITY_PUBLIC = 0; // Line 24 //TODO Quitar y remplazar por métodos explicitos
 	public static final int SECURITY_PRIVATE = 1;
 	
 	// Constant that denotes what media type a file should be stored as.
@@ -49,6 +49,7 @@ public class StorageUtilities {
 	 * 						the current time and media type.
 	 * @return			A File reference to a newly created temporary file
 	 */
+	//TODO:  implementar expliciamente 2 metodos. Uno para external storage otro para private storage.
 	public static File getOutputMediaFile(Context context, int type, int security, String name) {
 		Log.d(LOG_TAG, "getOutputMediaFile() type:" + type);
 		

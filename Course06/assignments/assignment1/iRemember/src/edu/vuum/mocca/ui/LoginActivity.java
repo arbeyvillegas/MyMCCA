@@ -45,6 +45,7 @@ public class LoginActivity extends StoryActivityBase{
 	 * Get the file used for storing login credentials
 	 */
 	public static File getLoginFile (Context context) {
+		//TODO: Llamar el método que obtiene el almacenamiento privado.
 		return StorageUtilities.getOutputMediaFile(context, 	// Line 48
 				StorageUtilities.MEDIA_TYPE_TEXT, 
 				MAX_SECURITY, 
@@ -110,6 +111,7 @@ public class LoginActivity extends StoryActivityBase{
 		// Save the input login information in a file so that the rest of the app can access it.
 		File loginFile = getLoginFile(this);
 		try {
+			//TODO: Posiblemente encriptar el contenido del archivo
 			BufferedWriter writer = new BufferedWriter(new FileWriter(loginFile));	// Line 113
 			writer.write(mLoginId.getText().toString());
 			writer.newLine();
