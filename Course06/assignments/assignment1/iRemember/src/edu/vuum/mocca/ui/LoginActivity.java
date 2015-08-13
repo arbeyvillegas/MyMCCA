@@ -45,12 +45,6 @@ public class LoginActivity extends StoryActivityBase{
 	 * Get the file used for storing login credentials
 	 */
 	public static File getLoginFile (Context context) {
-		//TODO: Llamar el método que obtiene el almacenamiento privado.
-		//return StorageUtilities.getOutputMediaFile(context, 	// Line 48
-		//		StorageUtilities.MEDIA_TYPE_TEXT, 
-		//		MAX_SECURITY, 
-		//		"login.txt");
-		
 		return StorageUtilities.getOutputMediaFile(context, 	// Line 48
 				StorageUtilities.MEDIA_TYPE_TEXT, 
 				StorageUtilities.SECURITY_PRIVATE,
