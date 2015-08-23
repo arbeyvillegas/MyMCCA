@@ -166,12 +166,7 @@ public class OAuth2SecurityConfiguration {
 			UserDetailsService svc = new InMemoryUserDetailsManager(
 					Arrays.asList(
 							User.create("admin", "pass", "ADMIN", "USER"),
-							User.create("user0", "pass", "USER"),
-							User.create("user1", "pass", "USER"),
-							User.create("user2", "pass", "USER"),
-							User.create("user3", "pass", "USER"),
-							User.create("user4", "pass", "USER"),
-							User.create("user5", "pass", "USER")));
+							User.create("user0", "pass", "USER")));
 
 			// Since clients have to use BASIC authentication with the client's id/secret,
 			// when sending a request for a password grant, we make each client a user

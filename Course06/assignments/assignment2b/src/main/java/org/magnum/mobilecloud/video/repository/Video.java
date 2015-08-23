@@ -1,30 +1,53 @@
 package org.magnum.mobilecloud.video.repository;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Objects;
 
 /**
  * A simple object to represent a video and its URL for viewing.
  * 
- * You probably need to, at a minimum, add some annotations to this
- * class.
+ * You probably need to, at a minimum, add some annotations to this class.
  * 
- * You are free to add annotations, members, and methods to this
- * class. However, you probably should not change the existing
- * methods or member variables. If you do change them, you need
- * to make sure that they are serialized into JSON in a way that
- * matches what is expected by the auto-grader.
+ * You are free to add annotations, members, and methods to this class. However,
+ * you probably should not change the existing methods or member variables. If
+ * you do change them, you need to make sure that they are serialized into JSON
+ * in a way that matches what is expected by the auto-grader.
  * 
  * @author mitchell
  */
+@Entity
 public class Video {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
 	private String name;
 	private String url;
 	private long duration;
 	private long likes;
-	
+
+	@JsonIgnore
+	private String owner;
+
+	@ElementCollection
+	@CollectionTable(name = "LIKES", joinColumns = @JoinColumn(name = "id"))
+	@JsonIgnore
+	@Column(name = "likeUser")
+	private List<String> likeUsers;
+
 	public Video() {
 	}
 
@@ -71,11 +94,47 @@ public class Video {
 	public long getLikes() {
 		return likes;
 	}
-	
+
 	public void setLikes(long likes) {
 		this.likes = likes;
 	}
-	
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	public List<String> getLikeUsers() {
+		return likeUsers;
+	}
+
+	public void addLikeUser(String user) {
+		if (this.likeUsers == null)
+			this.likeUsers = new ArrayList<String>();
+		this.likes++;
+		this.likeUsers.add(user);
+	}
+
+	public void removeLikeUser(String user) {
+		if (this.likeUsers != null) {
+			this.likes--;
+			this.likeUsers.remove(user);
+		}
+	}
+
+	public boolean isAlredyLikeByUser(String user) {
+		boolean userAlready = false;
+		if (this.likeUsers != null) {
+			if (this.likeUsers.contains(user)) {
+				userAlready = true;
+			}
+		}
+		return userAlready;
+	}
+
 	/**
 	 * Two Videos will generate the same hashcode if they have exactly the same
 	 * values for their name, url, and duration.
