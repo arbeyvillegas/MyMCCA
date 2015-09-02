@@ -58,8 +58,8 @@ public class VideoMediaStoreUtils {
             (MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
        
         // Create a new Video containing the meta-data.
-        return new Video(title,
-                         duration);
+        return new Video(title,filePath,
+                         duration,0);
     }
     
     /** 

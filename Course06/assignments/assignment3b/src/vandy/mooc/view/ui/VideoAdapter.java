@@ -79,7 +79,7 @@ public class VideoAdapter
         CheckBox ckLike =
         	(CheckBox)convertView.findViewById(R.id.ckLike);
         ckLike.setText(String.valueOf(video.getLikes()));
-        ckLike.setTag(1, video.getId());
+//        ckLike.setTag(1, video.getId());
         
         return convertView;
     }

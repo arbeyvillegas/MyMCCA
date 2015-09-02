@@ -10,11 +10,7 @@ public class Constants {
      * README.md to set up the SERVER_URL.
      */
     public static final String SERVER_URL =
-<<<<<<< HEAD
-        "http://192.168.56.1:8080";
-=======
-        "https://localhost:8443";
->>>>>>> origin/master
+        "https://192.168.56.1:8443";
     
     /**
      * Define a constant for 1 MB.

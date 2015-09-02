@@ -186,7 +186,7 @@ public class VideoOps
                            "Please connect to the Video Service");
 
             // Close down the Activity.
-            //mVideoView.get().finish();
+            mVideoView.get().finish();
         }
     }
 }
