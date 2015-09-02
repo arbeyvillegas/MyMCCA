@@ -71,9 +71,14 @@ public class VideoDataMediator {
     
     public VideoDataMediator(String user, String password) {
         // Initialize the VideoServiceProxy.
+<<<<<<< HEAD
     		mVideoServiceProxy = new vandy.mooc.model.mediator.webdata.SecuredRestBuilder()
     			//.setClient((Client)vandy.mooc.model.mediator.webdata.UnsafeHttpsClient.getUnsafeOkHttpClient())
     			.setClient(new OkClient(UnsafeHttpsClient.getUnsafeOkHttpClient()) )
+=======
+    	mVideoServiceProxy = new vandy.mooc.model.mediator.webdata.SecuredRestBuilder()
+    			.setClient(new OkClient(vandy.mooc.model.mediator.webdata.UnsafeHttpsClient.getUnsafeOkHttpClient()))
+>>>>>>> origin/master
     			.setEndpoint(Constants.SERVER_URL)
     			.setLoginEndpoint(Constants.SERVER_URL + VideoServiceProxy.TOKEN_PATH)
     			//.setLogLevel(LogLevel.FULL)
