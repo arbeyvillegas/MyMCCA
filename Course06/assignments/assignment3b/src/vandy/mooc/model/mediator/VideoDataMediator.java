@@ -8,6 +8,7 @@ import java.util.List;
 import retrofit.RestAdapter;
 import retrofit.client.ApacheClient;
 import retrofit.client.Client;
+import retrofit.client.OkClient;
 import retrofit.mime.TypedFile;
 import vandy.mooc.model.mediator.webdata.Video;
 import vandy.mooc.model.mediator.webdata.VideoServiceProxy;
@@ -70,7 +71,7 @@ public class VideoDataMediator {
     public VideoDataMediator(String user, String password) {
         // Initialize the VideoServiceProxy.
     	mVideoServiceProxy = new vandy.mooc.model.mediator.webdata.SecuredRestBuilder()
-    			.setClient((Client)vandy.mooc.model.mediator.webdata.UnsafeHttpsClient.getUnsafeOkHttpClient())
+    			.setClient(new OkClient(vandy.mooc.model.mediator.webdata.UnsafeHttpsClient.getUnsafeOkHttpClient()))
     			.setEndpoint(Constants.SERVER_URL)
     			.setLoginEndpoint(Constants.SERVER_URL + VideoServiceProxy.TOKEN_PATH)
     			// .setLogLevel(LogLevel.FULL)
