@@ -2,11 +2,13 @@ package vandy.mooc.model.mediator;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import retrofit.RestAdapter;
+import retrofit.client.ApacheClient;
+import retrofit.client.Client;
 import retrofit.mime.TypedFile;
-
 import vandy.mooc.model.mediator.webdata.Video;
 import vandy.mooc.model.mediator.webdata.VideoServiceProxy;
 import vandy.mooc.model.mediator.webdata.VideoStatus;
@@ -23,6 +25,9 @@ import android.net.Uri;
  * AsyncTask).
  */
 public class VideoDataMediator {
+	
+	private final String CLIENT_ID = "mobile";
+	
     /**
      * Status code to indicate that file is successfully
      * uploaded.
@@ -60,6 +65,17 @@ public class VideoDataMediator {
             .setEndpoint(Constants.SERVER_URL)
             .build()
             .create(VideoServiceProxy.class);
+    }
+    
+    public VideoDataMediator(String user, String password) {
+        // Initialize the VideoServiceProxy.
+    	mVideoServiceProxy = new vandy.mooc.model.mediator.webdata.SecuredRestBuilder()
+    			.setClient((Client)vandy.mooc.model.mediator.webdata.UnsafeHttpsClient.getUnsafeOkHttpClient())
+    			.setEndpoint(Constants.SERVER_URL)
+    			.setLoginEndpoint(Constants.SERVER_URL + VideoServiceProxy.TOKEN_PATH)
+    			// .setLogLevel(LogLevel.FULL)
+    			.setUsername(user).setPassword(password).setClientId(CLIENT_ID)
+    			.build().create(VideoServiceProxy.class);
     }
 
     /**
@@ -106,7 +122,7 @@ public class VideoDataMediator {
 
                     // Check if the Server returns any Video metadata.
                     if (receivedVideo != null) {
-
+                    	return STATUS_UPLOAD_SUCCESSFUL;
 //                        // Finally, upload the Video data to the server
 //                        // and get the status of the uploaded video data.
 //                        VideoStatus status =
@@ -147,5 +163,21 @@ public class VideoDataMediator {
         } catch (Exception e) {
            return null; 
         }
+    }
+    
+    public Video getVideo(long id){
+    	return mVideoServiceProxy.getVideoById(id);
+    }
+    
+    public void likeVideo(long id){
+    	mVideoServiceProxy.likeVideo(id);
+    }
+    
+    public void unlikeVideo(long id){
+    	mVideoServiceProxy.unlikeVideo(id);
+    }
+    
+    public Collection<String> getUsersWhoLikedVideo(long id){
+    	return mVideoServiceProxy.getUsersWhoLikedVideo(id);
     }
 }
