@@ -48,6 +48,10 @@ public class VideoOps
          * Sets the Adapter that contains List of Videos.
          */
         void setAdapter(VideoAdapter videoAdapter);
+        
+        String getUser();
+
+        String getPassword();
     }
         
     /**
@@ -107,8 +111,9 @@ public class VideoOps
         if (firstTimeIn) {
             // Create VideoDataMediator that will mediate the
             // communication between Server and Android Storage.
+        	
             mVideoMediator =
-                new VideoDataMediator();
+                new VideoDataMediator(view.getUser(), view.getPassword());
             
             // Create a local instance of our custom Adapter for our
             // ListView.
@@ -130,10 +135,11 @@ public class VideoOps
      */
     public void uploadVideo(Uri videoUri){
         // Sends an Intent command to the UploadVideoService.
-        mVideoView.get().getApplicationContext().startService
-            (UploadVideoService.makeIntent 
-                 (mVideoView.get().getApplicationContext(),
-                  videoUri));
+        //mVideoView.get().getApplicationContext().startService
+         //   (UploadVideoService.makeIntent 
+          //       (mVideoView.get().getApplicationContext(),
+          //        videoUri));
+    	mVideoMediator.uploadVideo(mVideoView.get().getActivityContext(), videoUri);
     }
 
     /**
@@ -180,7 +186,7 @@ public class VideoOps
                            "Please connect to the Video Service");
 
             // Close down the Activity.
-            mVideoView.get().finish();
+            //mVideoView.get().finish();
         }
     }
 }

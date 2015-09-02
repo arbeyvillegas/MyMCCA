@@ -8,7 +8,9 @@ import java.util.List;
 import retrofit.RestAdapter;
 import retrofit.client.ApacheClient;
 import retrofit.client.Client;
+import retrofit.client.OkClient;
 import retrofit.mime.TypedFile;
+import vandy.mooc.model.mediator.webdata.UnsafeHttpsClient;
 import vandy.mooc.model.mediator.webdata.Video;
 import vandy.mooc.model.mediator.webdata.VideoServiceProxy;
 import vandy.mooc.model.mediator.webdata.VideoStatus;
@@ -51,7 +53,7 @@ public class VideoDataMediator {
     /**
      * Defines methods that communicate with the Video Service.
      */
-    private VideoServiceProxy mVideoServiceProxy;
+    private static VideoServiceProxy mVideoServiceProxy;
     
     /**
      * Constructor that initializes the VideoDataMediator.
@@ -69,11 +71,12 @@ public class VideoDataMediator {
     
     public VideoDataMediator(String user, String password) {
         // Initialize the VideoServiceProxy.
-    	mVideoServiceProxy = new vandy.mooc.model.mediator.webdata.SecuredRestBuilder()
-    			.setClient((Client)vandy.mooc.model.mediator.webdata.UnsafeHttpsClient.getUnsafeOkHttpClient())
+    		mVideoServiceProxy = new vandy.mooc.model.mediator.webdata.SecuredRestBuilder()
+    			//.setClient((Client)vandy.mooc.model.mediator.webdata.UnsafeHttpsClient.getUnsafeOkHttpClient())
+    			.setClient(new OkClient(UnsafeHttpsClient.getUnsafeOkHttpClient()) )
     			.setEndpoint(Constants.SERVER_URL)
     			.setLoginEndpoint(Constants.SERVER_URL + VideoServiceProxy.TOKEN_PATH)
-    			// .setLogLevel(LogLevel.FULL)
+    			//.setLogLevel(LogLevel.FULL)
     			.setUsername(user).setPassword(password).setClientId(CLIENT_ID)
     			.build().create(VideoServiceProxy.class);
     }

@@ -7,7 +7,18 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
  
- 
+    
+ 	
+    <CheckBox
+        android:id="@+id/ckLike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="" 
+        android:textSize="18sp"
+        android:singleLine="true"
+        android:layout_gravity="center"
+        android:padding="15dp"
+        android:textColor="@android:color/black"/>
     <TextView 
         android:id="@+id/tvVideoTitle"
         android:layout_width="wrap_content"
@@ -16,8 +27,7 @@
         android:singleLine="true" 
         android:ellipsize="end" 
         android:layout_gravity="center"
-        android:padding="15dp"
+        android:padding="30dp"
         android:textColor="@android:color/black"/>
-    
             
 </LinearLayout>

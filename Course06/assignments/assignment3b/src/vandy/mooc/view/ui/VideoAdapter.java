@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 /**
@@ -75,6 +76,11 @@ public class VideoAdapter
             (TextView) convertView.findViewById(R.id.tvVideoTitle);
         titleText.setText(video.getName());
 
+        CheckBox ckLike =
+        	(CheckBox)convertView.findViewById(R.id.ckLike);
+        ckLike.setText(String.valueOf(video.getLikes()));
+        ckLike.setTag(1, video.getId());
+        
         return convertView;
     }
 

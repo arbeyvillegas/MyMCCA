@@ -2,10 +2,13 @@ package vandy.mooc.presenter;
 
 import java.lang.ref.WeakReference;
 
+import android.content.Intent;
 import vandy.mooc.common.ConfigurableOps;
 import vandy.mooc.common.ContextView;
 import vandy.mooc.common.GenericAsyncTaskOps;
 import vandy.mooc.model.mediator.VideoDataMediator;
+import vandy.mooc.view.LoginActivity;
+import vandy.mooc.view.VideoListActivity;
 
 public class LoginOps implements GenericAsyncTaskOps<Void, Void, String>,
 ConfigurableOps<LoginOps.View>{
@@ -30,18 +33,23 @@ ConfigurableOps<LoginOps.View>{
     }
     
     public void authenticate(String user,String password){
-    	mVideoMediator=new VideoDataMediator(user,password);
-    	mVideoMediator.getVideo(7);
+    	//mVideoMediator=new VideoDataMediator(user,password);
+    	//mVideoMediator.getVideoList();
     	
+    	Intent intent = new Intent(mLoginView.get().getActivityContext(), VideoListActivity.class);
+    	intent.putExtra("user", user);
+    	intent.putExtra("password", password);
+    	mLoginView.get().getActivityContext().startActivity(intent);
+		
     }
 
 	@Override
 	public void onConfiguration(View view, boolean firstTimeIn) {
 		// TODO Auto-generated method stub
 		mLoginView=new WeakReference<LoginOps.View>(view);
-		if (firstTimeIn){
-			mVideoMediator=new VideoDataMediator();
-		}
+		//if (firstTimeIn){
+		//	mVideoMediator=new VideoDataMediator();
+		//}
 	}
 
 	@Override

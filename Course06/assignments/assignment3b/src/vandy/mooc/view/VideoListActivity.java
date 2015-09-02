@@ -59,7 +59,11 @@ public class VideoListActivity
      */
     private ListView mVideosList;
 
-  
+    
+    private static String usr;
+    private static String pass;
+    
+    
     /**
      * Hook method called when a new instance of Activity is created.
      * One time initialization code goes here, e.g., storing Views.
@@ -71,7 +75,10 @@ public class VideoListActivity
     protected void onCreate(Bundle savedInstanceState) {
         // Initialize the default layout.
         setContentView(R.layout.video_list_activity);
-
+        
+        usr = getIntent().getExtras().getString("user");
+        pass = getIntent().getExtras().getString("password");
+        
         // Receiver for the notification.
         mUploadResultReceiver =
             new UploadResultReceiver();
@@ -102,6 +109,17 @@ public class VideoListActivity
                        this);
     }
     
+    @Override
+	public String getUser() {
+		// TODO Auto-generated method stub
+		return usr;
+	}
+
+	@Override
+	public String getPassword() {
+		// TODO Auto-generated method stub
+		return pass;
+	}
     
     /**
      * Displays a chooser dialog that gives options
