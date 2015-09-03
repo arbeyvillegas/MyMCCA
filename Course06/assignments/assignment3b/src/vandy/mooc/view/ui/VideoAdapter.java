@@ -1,17 +1,26 @@
 package vandy.mooc.view.ui;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import vandy.mooc.R;
+import vandy.mooc.model.mediator.VideoDataMediator;
 import vandy.mooc.model.mediator.webdata.Video;
+import vandy.mooc.model.services.LikeVideo;
+import vandy.mooc.model.services.UnLikeVideo;
+import vandy.mooc.model.services.UploadVideoService;
+import vandy.mooc.presenter.VideoOps;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
+import android.view.View.OnClickListener;
 
 /**
  * Show the view for each Video's meta-data in a ListView.
@@ -22,7 +31,10 @@ public class VideoAdapter
      * Allows access to application-specific resources and classes.
      */
     private final Context mContext;
-
+    
+    
+    private static VideoOps.View mView;
+    
     /**
      * ArrayList to hold list of Videos that is shown in ListView.
      */
@@ -34,9 +46,10 @@ public class VideoAdapter
      * 
      * @param Context
      */
-    public VideoAdapter(Context context) {
+    public VideoAdapter(Context context, VideoOps.View view) {
         super();
         mContext = context;
+        mView = view;
     }
 
     /**
@@ -63,27 +76,55 @@ public class VideoAdapter
     public View getView(int position,
                         View convertView,
                         ViewGroup parent) {
-        Video video = videoList.get(position);
+        final Video video = videoList.get(position);
 
         if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater)
                 mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView =
-                mInflater.inflate(R.layout.video_list_item,null);
+                mInflater.inflate(R.layout.video_list_item, null);
         }
 
         TextView titleText =
             (TextView) convertView.findViewById(R.id.tvVideoTitle);
         titleText.setText(video.getName());
-
-        CheckBox ckLike =
-        	(CheckBox)convertView.findViewById(R.id.ckLike);
-        ckLike.setText(String.valueOf(video.getLikes()));
-//        ckLike.setTag(1, video.getId());
         
+        titleText.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                displayUserLike(video.getId());
+            }
+        });
+        
+        
+        CheckBox ckLike = (CheckBox)convertView.findViewById(R.id.ckLike);
+        ckLike.setText(String.valueOf(video.getLikes()));
+        ckLike.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				likeUnlikeVideo(video.getId(), isChecked);
+				if(isChecked)
+					buttonView.setText(String.valueOf(video.getLikes() + 1));
+				else
+					buttonView.setText(String.valueOf(video.getLikes()));
+			}
+        });
+        
+          
+            
         return convertView;
     }
-
+    
+    private void displayUserLike(long id) {
+    	
+    }
+    
+    private void likeUnlikeVideo(long id, boolean chk) {
+        if(chk)
+    		new LikeVideo().execute(mView.getUser(), mView.getPassword(), String.valueOf(id));
+        else
+        	new UnLikeVideo().execute(mView.getUser(), mView.getPassword(), String.valueOf(id));
+    }
+    
     /**
      * Adds a Video to the Adapter and notify the change.
      */

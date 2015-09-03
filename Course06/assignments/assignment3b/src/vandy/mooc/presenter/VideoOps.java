@@ -52,6 +52,7 @@ public class VideoOps
         String getUser();
 
         String getPassword();
+       
     }
         
     /**
@@ -72,7 +73,7 @@ public class VideoOps
      * VideoDataMediator mediates the communication between Video
      * Service and local storage on the Android device.
      */
-    VideoDataMediator mVideoMediator;
+    public static VideoDataMediator mVideoMediator;
     
     /**
      * The Adapter that is needed by ListView to show the list of
@@ -118,7 +119,7 @@ public class VideoOps
             // Create a local instance of our custom Adapter for our
             // ListView.
             mAdapter = 
-                 new VideoAdapter(mVideoView.get().getApplicationContext());
+                 new VideoAdapter(mVideoView.get().getApplicationContext(), view);
 
             // Get the VideoList from Server. 
             getVideoList();
@@ -127,19 +128,19 @@ public class VideoOps
         // Set the adapter to the ListView.
         mVideoView.get().setAdapter(mAdapter);
     }
-
+    
     /**
      * Start a service that Uploads the Video having given Id.
      *   
      * @param videoId
      */
-    public void uploadVideo(Uri videoUri){
+    public void uploadVideo(Uri videoUri){ 
         // Sends an Intent command to the UploadVideoService.
-        //mVideoView.get().getApplicationContext().startService
-         //   (UploadVideoService.makeIntent 
-          //       (mVideoView.get().getApplicationContext(),
-          //        videoUri));
-    	mVideoMediator.uploadVideo(mVideoView.get().getActivityContext(), videoUri);
+        mVideoView.get().getApplicationContext().startService
+            (UploadVideoService.makeIntent 
+                 (mVideoView.get().getApplicationContext(),
+                		 videoUri,
+                		 mVideoMediator));
     }
 
     /**

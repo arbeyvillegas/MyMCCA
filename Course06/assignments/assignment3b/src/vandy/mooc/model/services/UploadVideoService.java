@@ -33,7 +33,7 @@ public class UploadVideoService
      * VideoDataMediator mediates the communication between Video
      * Service and local storage in the Android device.
      */
-    private VideoDataMediator mVideoMediator;
+    private static VideoDataMediator mVideoMediator;
     
     /**
      * Manages the Notification displayed in System UI.
@@ -72,7 +72,9 @@ public class UploadVideoService
      * @return
      */
     public static Intent makeIntent(Context context,
-                                    Uri videoUri) {
+                                    Uri videoUri,
+                                    VideoDataMediator inVideoMediator) {
+    	mVideoMediator = inVideoMediator;
         return new Intent(context, 
                           UploadVideoService.class)
                    .setData(videoUri);
@@ -94,8 +96,8 @@ public class UploadVideoService
         
         // Create VideoDataMediator that will mediate the communication
         // between Server and Android Storage.
-        mVideoMediator =
-            new VideoDataMediator(); 
+        //mVideoMediator =
+        //    new VideoDataMediator(); 
 
         // Check if Video Upload is successful.
         finishNotification(mVideoMediator.uploadVideo(getApplicationContext(),
