@@ -139,8 +139,7 @@ public class VideoOps
         mVideoView.get().getApplicationContext().startService
             (UploadVideoService.makeIntent 
                  (mVideoView.get().getApplicationContext(),
-                		 videoUri,
-                		 mVideoMediator));
+                		 videoUri));
     }
 
     /**

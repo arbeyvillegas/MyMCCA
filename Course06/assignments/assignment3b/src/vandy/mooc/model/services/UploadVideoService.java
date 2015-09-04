@@ -1,6 +1,7 @@
 package vandy.mooc.model.services;
 
 import vandy.mooc.model.mediator.VideoDataMediator;
+import vandy.mooc.presenter.VideoOps;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -33,7 +34,6 @@ public class UploadVideoService
      * VideoDataMediator mediates the communication between Video
      * Service and local storage in the Android device.
      */
-    private static VideoDataMediator mVideoMediator;
     
     /**
      * Manages the Notification displayed in System UI.
@@ -72,9 +72,7 @@ public class UploadVideoService
      * @return
      */
     public static Intent makeIntent(Context context,
-                                    Uri videoUri,
-                                    VideoDataMediator inVideoMediator) {
-    	mVideoMediator = inVideoMediator;
+                                    Uri videoUri) {
         return new Intent(context, 
                           UploadVideoService.class)
                    .setData(videoUri);
@@ -100,7 +98,7 @@ public class UploadVideoService
         //    new VideoDataMediator(); 
 
         // Check if Video Upload is successful.
-        finishNotification(mVideoMediator.uploadVideo(getApplicationContext(),
+        finishNotification(VideoOps.mVideoMediator.uploadVideo(getApplicationContext(),
                                                    intent.getData()));
              
         // Send the Broadcast to VideoListActivity that the Video

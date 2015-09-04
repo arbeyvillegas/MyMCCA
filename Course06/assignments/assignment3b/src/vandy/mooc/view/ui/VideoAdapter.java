@@ -120,9 +120,9 @@ public class VideoAdapter
     
     private void likeUnlikeVideo(long id, boolean chk) {
         if(chk)
-    		new LikeVideo().execute(mView.getUser(), mView.getPassword(), String.valueOf(id));
+    		new LikeVideo().execute(String.valueOf(id));
         else
-        	new UnLikeVideo().execute(mView.getUser(), mView.getPassword(), String.valueOf(id));
+        	new UnLikeVideo().execute(String.valueOf(id));
     }
     
     /**

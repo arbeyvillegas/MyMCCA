@@ -1,22 +1,18 @@
 package vandy.mooc.model.services;
 
-import vandy.mooc.model.mediator.VideoDataMediator;
+import vandy.mooc.presenter.VideoOps;
 import android.os.AsyncTask;
 
 public class UnLikeVideo extends AsyncTask<String, Void, Long > {
 
 	protected Long doInBackground(String... params) {
-		long ret = 0;
+		VideoOps.mVideoMediator.unlikeVideo(Long.parseLong(params[2]));
 		
-		VideoDataMediator mVideoMediator =
-                new VideoDataMediator(params[0], params[1]);
-		
-		mVideoMediator.unlikeVideo(Long.parseLong(params[2]));
-		
-		return ret;
+		return (long) 0;
 	}
 	
-	protected void onPostExecute(Float result) {         	
+	protected void onPostExecute(Float result) {   
+		
 	}
 	
 	protected void onPreExecute() {
