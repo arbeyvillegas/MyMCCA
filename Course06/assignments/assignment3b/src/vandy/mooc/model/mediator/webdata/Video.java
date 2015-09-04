@@ -18,6 +18,7 @@ public class Video {
 	private String url;
 	private long duration;
 	private long likes;
+	private boolean likeByCurrentUser;
 	
 	public Video() {
 	}
@@ -80,6 +81,14 @@ public class Video {
 
 	public void setLikes(long likes) {
 		this.likes = likes;
+	}
+	
+	public boolean isLikeByCurrentUser() {
+		return likeByCurrentUser;
+	}
+
+	public void setLikeByCurrentUser(boolean likeByCurrentUser) {
+		this.likeByCurrentUser = likeByCurrentUser;
 	}
 	
     /**

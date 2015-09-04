@@ -158,10 +158,10 @@ public interface VideoSvcApi {
 	@POST(VIDEO_SVC_PATH)
 	public Video addVideo(@Body Video v);
 	
-	@POST(VIDEO_SVC_PATH + "/{id}/like")
+	@GET(VIDEO_SVC_PATH + "/{id}/like")
 	public Void likeVideo(@Path("id") long id);
 	
-	@POST(VIDEO_SVC_PATH + "/{id}/unlike")
+	@GET(VIDEO_SVC_PATH + "/{id}/unlike")
 	public Void unlikeVideo(@Path("id") long id);
 	
 	@GET(VIDEO_SVC_PATH + "/{id}/likedby")

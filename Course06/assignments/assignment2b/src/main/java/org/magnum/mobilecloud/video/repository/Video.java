@@ -9,6 +9,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Transient;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 
@@ -38,6 +39,8 @@ public class Video {
 	private String url;
 	private long duration;
 	private long likes;
+	@Transient
+	private boolean likeByCurrentUser;
 
 	@JsonIgnore
 	private String owner;
@@ -125,6 +128,14 @@ public class Video {
 		}
 	}
 
+	public boolean isLikeByCurrentUser() {
+		return likeByCurrentUser;
+	}
+
+	public void setLikeByCurrentUser(boolean likeByCurrentUser) {
+		this.likeByCurrentUser = likeByCurrentUser;
+	}
+	
 	public boolean isAlredyLikeByUser(String user) {
 		boolean userAlready = false;
 		if (this.likeUsers != null) {
@@ -164,4 +175,5 @@ public class Video {
 		}
 	}
 
+	
 }

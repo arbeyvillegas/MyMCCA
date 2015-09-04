@@ -6,50 +6,70 @@ import android.content.Intent;
 import vandy.mooc.common.ConfigurableOps;
 import vandy.mooc.common.ContextView;
 import vandy.mooc.common.GenericAsyncTaskOps;
+import vandy.mooc.common.Utils;
 import vandy.mooc.model.mediator.VideoDataMediator;
 import vandy.mooc.view.LoginActivity;
 import vandy.mooc.view.VideoListActivity;
 
 public class LoginOps implements GenericAsyncTaskOps<Void, Void, String>,
-ConfigurableOps<LoginOps.View>{
+		ConfigurableOps<LoginOps.View> {
 
 	VideoDataMediator mVideoMediator;
 	private WeakReference<LoginOps.View> mLoginView;
-	/**
-     * This interface defines the minimum interface needed by the
-     * VideoOps class in the "Presenter" layer to interact with the
-     * VideoListActivity in the "View" layer.
-     */
-    public interface View extends ContextView {
-        /**
-         * Finishes the Activity the VideoOps is
-         * associated with.
-         */
-        void finish();
-        
-        String getUser();
 
-        String getPassword();
-    }
-    
-    public void authenticate(String user,String password){
-    	//mVideoMediator=new VideoDataMediator(user,password);
-    	//mVideoMediator.getVideoList();
-    	
-    	Intent intent = new Intent(mLoginView.get().getActivityContext(), VideoListActivity.class);
-    	intent.putExtra("user", user);
-    	intent.putExtra("password", password);
-    	mLoginView.get().getActivityContext().startActivity(intent);
-		
-    }
+	/**
+	 * This interface defines the minimum interface needed by the VideoOps class
+	 * in the "Presenter" layer to interact with the VideoListActivity in the
+	 * "View" layer.
+	 */
+	public interface View extends ContextView {
+		/**
+		 * Finishes the Activity the VideoOps is associated with.
+		 */
+		void finish();
+
+		String getUser();
+
+		String getPassword();
+	}
+
+	public void authenticate(String user, String password) {
+		// mVideoMediator=new VideoDataMediator(user,password);
+		// mVideoMediator.getVideoList();
+		try {
+			mVideoMediator = new VideoDataMediator(user, password);
+			mVideoMediator.getVideoList();
+			createVideoListIntent();
+			// Intent intent = new Intent(mLoginView.get().getActivityContext(),
+			// VideoListActivity.class);
+			// intent.putExtra("user", user);
+			// intent.putExtra("password", password);
+			// mLoginView.get().getActivityContext().startActivity(intent);
+			
+		} catch (Exception ex) {
+			Utils.showToast(mLoginView.get().getActivityContext(), "Login failed");
+		}
+		// Intent intent = new Intent(mLoginView.get().getActivityContext(),
+		// VideoListActivity.class);
+		// intent.putExtra("user", user);
+		// intent.putExtra("password", password);
+		// mLoginView.get().getActivityContext().startActivity(intent);
+
+	}
+	
+	private void createVideoListIntent(){
+		 Intent intent = new Intent(mLoginView.get().getActivityContext(),
+		 VideoListActivity.class);
+		 mLoginView.get().getActivityContext().startActivity(intent);
+	}
 
 	@Override
 	public void onConfiguration(View view, boolean firstTimeIn) {
 		// TODO Auto-generated method stub
-		mLoginView=new WeakReference<LoginOps.View>(view);
-		//if (firstTimeIn){
-		//	mVideoMediator=new VideoDataMediator();
-		//}
+		mLoginView = new WeakReference<LoginOps.View>(view);
+		// if (firstTimeIn){
+		// mVideoMediator=new VideoDataMediator();
+		// }
 	}
 
 	@Override
@@ -61,6 +81,6 @@ ConfigurableOps<LoginOps.View>{
 	@Override
 	public void onPostExecute(String result) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

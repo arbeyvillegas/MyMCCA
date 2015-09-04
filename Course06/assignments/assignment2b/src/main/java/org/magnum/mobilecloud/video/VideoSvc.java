@@ -19,6 +19,7 @@
 package org.magnum.mobilecloud.video;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -78,7 +79,7 @@ public class VideoSvc {
 	}
 
 	@PreAuthorize("hasRole('USER')")
-	@RequestMapping(value = VideoSvcApi.VIDEO_SVC_PATH + "/{id}/like", method = RequestMethod.POST)
+	@RequestMapping(value = VideoSvcApi.VIDEO_SVC_PATH + "/{id}/like", method = RequestMethod.GET)
 	public @ResponseBody void addVideoLike(@PathVariable Long id,
 			Principal principal, HttpServletResponse response) {
 		Video video = repository.findOne(id);
@@ -96,7 +97,7 @@ public class VideoSvc {
 	}
 
 	@PreAuthorize("hasRole('USER')")
-	@RequestMapping(value = VideoSvcApi.VIDEO_SVC_PATH + "/{id}/unlike", method = RequestMethod.POST)
+	@RequestMapping(value = VideoSvcApi.VIDEO_SVC_PATH + "/{id}/unlike", method = RequestMethod.GET)
 	public @ResponseBody void removeVideoLike(@PathVariable Long id,
 			Principal principal, HttpServletResponse response) {
 		Video video = repository.findOne(id);
@@ -138,8 +139,16 @@ public class VideoSvc {
 	 */
 	@PreAuthorize("hasRole('USER')")
 	@RequestMapping(value = VideoSvcApi.VIDEO_SVC_PATH, method = RequestMethod.GET)
-	public @ResponseBody List<Video> getVideoList() {
-		return Lists.newArrayList(repository.findAll());
+	public @ResponseBody List<Video> getVideoList(Principal principal) {
+		ArrayList<Video> listVideo=Lists.newArrayList(repository.findAll());
+		for(int i=0;i<listVideo.size();i++){
+			List<String> likeUsers=listVideo.get(i).getLikeUsers();
+			if(likeUsers.contains(principal.getName())){
+				listVideo.get(i).setLikeByCurrentUser(true);
+			}
+		}
+		
+		return listVideo;
 	}
 
 }
