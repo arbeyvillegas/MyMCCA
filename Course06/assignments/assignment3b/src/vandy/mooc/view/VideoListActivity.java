@@ -76,9 +76,6 @@ public class VideoListActivity
         // Initialize the default layout.
         setContentView(R.layout.video_list_activity);
         
-        usr = getIntent().getExtras().getString("user");
-        pass = getIntent().getExtras().getString("password");
-        
         // Receiver for the notification.
         mUploadResultReceiver =
             new UploadResultReceiver();
