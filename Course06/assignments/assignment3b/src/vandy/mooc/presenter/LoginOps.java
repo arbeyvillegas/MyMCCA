@@ -37,7 +37,7 @@ public class LoginOps implements GenericAsyncTaskOps<Void, Void, String>,
 		try {
 			mVideoMediator = new VideoDataMediator(user, password);
 			mVideoMediator.getVideoList();
-			createVideoListIntent(user, password);
+			createVideoListIntent();
 			
 		} catch (Exception ex) {
 			Utils.showToast(mLoginView.get().getActivityContext(), "Login failed");
@@ -45,9 +45,9 @@ public class LoginOps implements GenericAsyncTaskOps<Void, Void, String>,
 
 	}
 	
-	private void createVideoListIntent(String user, String password){
+	private void createVideoListIntent(){
 		 Intent intent = new Intent(mLoginView.get().getActivityContext(),
-		 VideoListActivity.class).putExtra("user", user).putExtra("password", password);
+		 VideoListActivity.class);
 		 mLoginView.get().getActivityContext().startActivity(intent);
 	}
 
