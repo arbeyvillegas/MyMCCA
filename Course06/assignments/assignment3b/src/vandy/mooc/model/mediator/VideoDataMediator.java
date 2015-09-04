@@ -60,11 +60,6 @@ public class VideoDataMediator {
      */
     public VideoDataMediator() {
         // Initialize the VideoServiceProxy.
-        mVideoServiceProxy = new RestAdapter
-            .Builder()
-            .setEndpoint(Constants.SERVER_URL)
-            .build()
-            .create(VideoServiceProxy.class);
     }
     
     public VideoDataMediator(String user, String password) {

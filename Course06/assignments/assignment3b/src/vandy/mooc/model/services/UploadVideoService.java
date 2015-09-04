@@ -96,9 +96,11 @@ public class UploadVideoService
         // between Server and Android Storage.
         //mVideoMediator =
         //    new VideoDataMediator(); 
-
+        
+        VideoDataMediator mVideoMediator = new VideoDataMediator();
+        
         // Check if Video Upload is successful.
-        finishNotification(VideoOps.mVideoMediator.uploadVideo(getApplicationContext(),
+        finishNotification(mVideoMediator.uploadVideo(getApplicationContext(),
                                                    intent.getData()));
              
         // Send the Broadcast to VideoListActivity that the Video

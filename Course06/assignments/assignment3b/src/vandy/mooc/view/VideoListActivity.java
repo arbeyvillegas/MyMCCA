@@ -100,7 +100,7 @@ public class VideoListActivity
                 displayChooserDialog();
             }
         });
-
+        
         // Invoke the special onCreate() method in GenericActivity,
         // passing in the VideoOps class to instantiate/manage and
         // "this" to provide VideoOps with the VideoOps.View instance.

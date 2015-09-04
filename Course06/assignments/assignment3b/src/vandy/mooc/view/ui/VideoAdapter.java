@@ -9,13 +9,15 @@ import vandy.mooc.model.mediator.VideoDataMediator;
 import vandy.mooc.model.mediator.webdata.Video;
 import vandy.mooc.model.services.LikeVideo;
 import vandy.mooc.model.services.UnLikeVideo;
-import vandy.mooc.model.services.UploadVideoService;
 import vandy.mooc.presenter.VideoOps;
+import android.app.Dialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -31,6 +33,7 @@ public class VideoAdapter
      * Allows access to application-specific resources and classes.
      */
     private final Context mContext;
+    private final Context mContextA;
     
     
     private static VideoOps.View mView;
@@ -46,9 +49,10 @@ public class VideoAdapter
      * 
      * @param Context
      */
-    public VideoAdapter(Context context, VideoOps.View view) {
+    public VideoAdapter(Context context, VideoOps.View view, Context incontext) {
         super();
         mContext = context;
+        mContextA = incontext;
         mView = view;
     }
 
@@ -98,6 +102,7 @@ public class VideoAdapter
         
         CheckBox ckLike = (CheckBox)convertView.findViewById(R.id.ckLike);
         ckLike.setText(String.valueOf(video.getLikes()));
+        ckLike.setChecked(video.isLikeByCurrentUser());
         ckLike.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
@@ -105,7 +110,12 @@ public class VideoAdapter
 				if(isChecked)
 					buttonView.setText(String.valueOf(video.getLikes() + 1));
 				else
-					buttonView.setText(String.valueOf(video.getLikes()));
+				{
+					if(video.getLikes() > 0)
+						buttonView.setText(String.valueOf(video.getLikes()-1));
+					else
+						buttonView.setText(String.valueOf(video.getLikes()));
+				}
 			}
         });
         
@@ -115,7 +125,7 @@ public class VideoAdapter
     }
     
     private void displayUserLike(long id) {
-    	
+    	new GetUserLikes().execute(String.valueOf(id));
     }
     
     private void likeUnlikeVideo(long id, boolean chk) {
@@ -176,4 +186,51 @@ public class VideoAdapter
     public long getItemId(int position) {
         return position;
     }
+    
+    
+    public class GetUserLikes extends AsyncTask<String, Void, Collection<String> > {
+
+    	protected Collection<String> doInBackground(String... params) {
+    		VideoDataMediator mVideoMediator = new VideoDataMediator();
+    		return mVideoMediator.getUsersWhoLikedVideo(Long.parseLong(params[0]));
+    	}
+    	
+    	protected void onPostExecute(Collection<String> result) {    
+    		
+    		String strUserLikes = "";
+    		
+    		for(String strUser:result)
+    		{
+    			strUserLikes = strUserLikes + " -- " + strUser;
+    		}
+    		
+    		final Dialog dialog = new Dialog(mContextA);
+    		dialog.setContentView(R.layout.videolikeslayout);
+    		dialog.setTitle("Videlo Likes");
+
+    		// set the custom dialog components - text, image and button
+    		TextView text = (TextView) dialog.findViewById(R.id.text);
+    		text.setText(strUserLikes);
+
+
+    		Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+    		// if button is clicked, close the custom dialog
+    		dialogButton.setOnClickListener(new OnClickListener() {
+    			@Override
+    			public void onClick(View v) {
+    				dialog.dismiss();
+    			}
+    		});
+
+    		dialog.show();
+    	}
+    	
+    	protected void onPreExecute() {
+    		
+    	}
+    	
+
+    }
 }
+
+

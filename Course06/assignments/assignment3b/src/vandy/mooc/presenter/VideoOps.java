@@ -73,7 +73,7 @@ public class VideoOps
      * VideoDataMediator mediates the communication between Video
      * Service and local storage on the Android device.
      */
-    public static VideoDataMediator mVideoMediator;
+    //public static VideoDataMediator mVideoMediator;
     
     /**
      * The Adapter that is needed by ListView to show the list of
@@ -113,13 +113,13 @@ public class VideoOps
             // Create VideoDataMediator that will mediate the
             // communication between Server and Android Storage.
         	
-            mVideoMediator =
-                new VideoDataMediator(view.getUser(), view.getPassword());
+            //mVideoMediator =
+              //  new VideoDataMediator(view.getUser(), view.getPassword());
             
             // Create a local instance of our custom Adapter for our
             // ListView.
             mAdapter = 
-                 new VideoAdapter(mVideoView.get().getApplicationContext(), view);
+                 new VideoAdapter(mVideoView.get().getApplicationContext(), view, mVideoView.get().getActivityContext());
 
             // Get the VideoList from Server. 
             getVideoList();
@@ -158,6 +158,7 @@ public class VideoOps
      */
     @Override
     public List<Video> doInBackground(Void... params) {
+    	VideoDataMediator mVideoMediator = new VideoDataMediator();
         return mVideoMediator.getVideoList();
     }
 
